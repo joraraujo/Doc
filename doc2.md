@@ -175,46 +175,46 @@ Este fluxo deve ser executado em intervalos regulares (ex: diariamente, a cada 4
 
 ```mermaid
 graph TD
-    A[Início: Sincronização de Funcionários] --> B{Obter `last_sync_timestamp`};
-    B --> C{Conectar LG API (SOAP) e Mindsight API (REST)};
+    A["Início - Sincronização de Funcionários"] --> B{"Obter last_sync_timestamp"};
+    B --> C{"Conectar LG API (SOAP) e Mindsight API (REST)"};
 
-    C --> D[Consultar LG ServicoDeContratoDeTrabalho: ConsultarListaDeModificados (paginado)];
-    D --> E{Para cada página de contratos modificados LG:};
-    E --> F[Extrair Matrícula, Empresa, PessoaId dos contratos modificados];
+    C --> D["Consultar LG ServicoDeContratoDeTrabalho - ConsultarListaDeModificados (paginado)"];
+    D --> E{"Para cada página de contratos modificados LG"};
+    E --> F["Extrair Matrícula, Empresa, PessoaId dos contratos modificados"];
 
-    F --> G{Dividir PessoaIds em lotes de até 50};
-    G --> H{Para cada lote de PessoaIds:};
-    H --> I[Chamar LG ServicoDeColaborador: ConsultarLista (para dados pessoais)];
-    H --> J[Chamar LG ServicoDeContratoDeTrabalho: ConsultarListaPorDemanda (para dados contratuais completos da Matrícula/Empresa)];
+    F --> G{"Dividir PessoaIds em lotes de até 50"};
+    G --> H{"Para cada lote de PessoaIds"};
+    H --> I["Chamar LG ServicoDeColaborador - ConsultarLista (dados pessoais)"];
+    H --> J["Chamar LG ServicoDeContratoDeTrabalho - ConsultarListaPorDemanda (dados contratuais completos)"];
 
-    I & J --> K{Para cada funcionário (dados LG Combinados):};
-    K --> L{Verificar existência na Mindsight: GET /employees/?employee_code=LG_Matricula};
-    
-    L -- Não Existe (NOVO FUNCIONÁRIO) --> M[Mapear dados LG para payload Mindsight `create_complete`];
-    M --> N[Resolver URLs/IDs de Área, Cargo, Gestor, Empresa, Filial da Mindsight (usando mapeamentos)];
-    N --> O[Chamar Mindsight: POST /employees/create_complete/];
-    O --> P[Armazenar Mindsight Employee ID para futuras atualizações];
-    P --> Q[Processar próximo funcionário LG];
+    I & J --> K{"Para cada funcionário (dados LG combinados)"};
+    K --> L{"Verificar existência na Mindsight - GET employees by employee_code"};
 
-    L -- Existe (ATUALIZAR FUNCIONÁRIO) --> R[Obter dados atuais do funcionário Mindsight: GET /employees/{id}/];
-    R --> S{Comparar dados LG com Mindsight para identificar alterações};
+    L -- "Não Existe (Novo Funcionário)" --> M["Mapear dados LG para payload Mindsight create_complete"];
+    M --> N["Resolver URLs/IDs de Área, Cargo, Gestor, Empresa, Filial (usando mapeamentos)"];
+    N --> O["Chamar Mindsight - POST employees/create_complete"];
+    O --> P["Armazenar Mindsight Employee ID para futuras atualizações"];
+    P --> Q["Processar próximo funcionário LG"];
 
-    S --> T{Detectar Mudança de Status (LG TiposDeSituacoes vs. Mindsight `is_active`)};
-    T -- Rescindido na LG, Ativo na Mindsight --> U[Chamar Mindsight: POST /employees/{id}/deactivate/];
-    T -- Ativo na LG, Rescindido na Mindsight --> V[Chamar Mindsight: POST /employees/{id}/activate/];
+    L -- "Existe (Atualizar Funcionário)" --> R["Obter dados atuais do funcionário Mindsight - GET employees/{id}"];
+    R --> S{"Comparar dados LG com Mindsight para identificar alterações"};
 
-    S --> W{Detectar Mudança de Área, Cargo, Gestor};
-    W -- Área diferente --> X1[Resolver nova Mindsight Área ID; Chamar Mindsight: POST /employees/{id}/current_area/];
-    W -- Cargo diferente --> X2[Resolver novo Mindsight Cargo ID; Chamar Mindsight: POST /employees/{id}/current_position/];
-    W -- Gestor diferente --> X3[Resolver novo Mindsight Gestor ID; Chamar Mindsight: POST /employees/{id}/current_manager/];
+    S --> T{"Detectar mudança de status (LG TiposDeSituacoes vs Mindsight is_active)"};
+    T -- "Rescindido na LG, Ativo na Mindsight" --> U["Chamar Mindsight - POST employees/{id}/deactivate"];
+    T -- "Ativo na LG, Rescindido na Mindsight" --> V["Chamar Mindsight - POST employees/{id}/activate"];
 
-    S --> Y{Detectar Mudança em outros campos do perfil do funcionário (email, nome, CPF, data nascimento, etc.)};
-    Y -- Campos diferentes --> Z1[Chamar Mindsight: PATCH /users/{id}/ (para user-related fields)];
-    Y -- Campos diferentes --> Z2[Chamar Mindsight: **PATCH /employees/{id}/ (para outros campos)** - **PONTO DE ATENÇÃO: VERIFICAR DISPONIBILIDADE/ENDPOINTS ESPECÍFICOS**];
-    
+    S --> W{"Detectar mudança de Área, Cargo, Gestor"};
+    W -- "Área diferente" --> X1["Resolver nova Área ID; POST employees/{id}/current_area"];
+    W -- "Cargo diferente" --> X2["Resolver novo Cargo ID; POST employees/{id}/current_position"];
+    W -- "Gestor diferente" --> X3["Resolver novo Gestor ID; POST employees/{id}/current_manager"];
+
+    S --> Y{"Detectar mudança em outros campos (email, nome, CPF, data nascimento, etc.)"};
+    Y -- "Campos diferentes" --> Z1["PATCH users/{id} (user-related fields)"];
+    Y -- "Campos diferentes" --> Z2["PATCH employees/{id} (outros campos) - Ponto de atenção: verificar endpoints específicos"];
+
     U & V & X1 & X2 & X3 & Z1 & Z2 --> Q;
     Q --> E;
-    E -- Todas as páginas processadas --> Zfinal[Atualizar `last_sync_timestamp` e Fim];
+    E -- "Todas as páginas processadas" --> Zfinal["Atualizar last_sync_timestamp e Fim"];
 
 ```
 
