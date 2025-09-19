@@ -148,6 +148,3 @@ Após processar com sucesso todos os registros modificados, atualize a data da "
 *   **Cache Local:** Mantenha um cache local dos mapeamentos (código LG -> URL Mindsight) para áreas, cargos e gestores, evitando consultas desnecessárias à API da Mindsight.
 *   **Paginação:** Se a lista de modificados for muito grande, implemente paginação no serviço `ConsultarListaDeModificados` (embora a documentação não mencione paginação explícita para este endpoint, é uma boa prática estar preparado).
 
----
-
-Este procedimento fornece uma base sólida e eficiente para manter os dados do sistema Mindsight sincronizados com o LG.
