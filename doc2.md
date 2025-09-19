@@ -218,6 +218,4 @@ graph TD
 
 ```
 
----
 
-Espero que esta análise detalhada e os fluxogramas ajudem a planejar e implementar sua integração entre a LG (Gen.te nuvem) e a Mindsight (API Controle)! Lembre-se de validar os "pontos de atenção" com a equipe Mindsight.
