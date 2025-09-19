@@ -117,55 +117,55 @@ Vamos dividir o fluxograma em duas partes principais: **Sincronização de Dados
 Este fluxo deve ser executado antes da sincronização de funcionários ou sempre que houver suspeita de dados mestres desatualizados, mas geralmente não é tão frequente quanto a sincronização de funcionários.
 
 ```mermaid
+
 graph TD
+    A["Início - Sincronização de Dados Mestres"] --> B{"Conectar LG API (SOAP)"};
+    B --> C1["Consultar LG ServicoDeContratoDeTrabalho - Empresas"];
+    B --> C2["Consultar LG ServicoDeContratoDeTrabalho - Estabelecimentos"];
+    B --> C3["Consultar LG ServicoDeContratoDeTrabalho - Unidades Organizacionais"];
+    B --> C4["Consultar LG ServicoDeContratoDeTrabalho - Cargos"];
 
-    A[Início: Sincronização de Dados Mestres] --> B{Conectar LG API (SOAP)};
-    B --> C1[Consultar LG ServicoDeContratoDeTrabalho: Empresas];
-    B --> C2[Consultar LG ServicoDeContratoDeTrabalho: Estabelecimentos];
-    B --> C3[Consultar LG ServicoDeContratoDeTrabalho: UnidadesOrganizacionais];
-    B --> C4[Consultar LG ServicoDeContratoDeTrabalho: Cargos];
+    C1 --> D1{"Processar Empresas LG"};
+    C2 --> D2{"Processar Estabelecimentos LG"};
+    C3 --> D3{"Processar UOs LG"};
+    C4 --> D4{"Processar Cargos LG"};
 
-    C1 --> D1{Processar Empresas LG};
-    C2 --> D2{Processar Estabelecimentos LG};
-    C3 --> D3{Processar UOs LG};
-    C4 --> D4{Processar Cargos LG};
+    D1 --> E1{"Conectar Mindsight API (REST)"};
+    D2 --> E2{"Conectar Mindsight API (REST)"};
+    D3 --> E3{"Conectar Mindsight API (REST)"};
+    D4 --> E4{"Conectar Mindsight API (REST)"};
 
-    D1 --> E1{Conectar Mindsight API (REST)};
-    D2 --> E2{Conectar Mindsight API (REST)};
-    D3 --> E3{Conectar Mindsight API (REST)};
-    D4 --> E4{Conectar Mindsight API (REST)};
+    E1 --> F1{"Para cada Empresa LG"};
+    E2 --> F2{"Para cada Estabelecimento LG"};
+    E3 --> F3{"Para cada UO LG"};
+    E4 --> F4{"Para cada Cargo LG"};
 
-    E1 --> F1{Para cada Empresa LG:};
-    E2 --> F2{Para cada Estabelecimento LG:};
-    E3 --> F3{Para cada UO LG:};
-    E4 --> F4{Para cada Cargo LG:};
+    F1 --> G1a{"Verificar Mindsight - GET corporations by code"};
+    F2 --> G2a{"Verificar Mindsight - GET branch_corporations by code"};
+    F3 --> G3a{"Verificar Mindsight - GET areas by code"};
+    F4 --> G4a{"Verificar Mindsight - GET positions by code"};
 
-    F1 --> G1a{Verificar Mindsight: GET /corporations/?code=LG_code};
-    F2 --> G2a{Verificar Mindsight: GET /branch_corporations/?code=LG_code};
-    F3 --> G3a{Verificar Mindsight: GET /areas/?code=LG_code};
-    F4 --> G4a{Verificar Mindsight: GET /positions/?code=LG_code};
-
-    G1a -- Não Existe --> H1a[Criar Mindsight Empresa: POST /corporations/];
-    G1a -- Existe --> H1b[Atualizar Mindsight Empresa: PATCH /corporations/{id}/];
-    H1a --> I1[Armazenar Mapeamento LG_ID -> Mindsight_ID];
+    G1a -- "Não Existe" --> H1a["Criar Mindsight Empresa - POST /corporations"];
+    G1a -- "Existe" --> H1b["Atualizar Mindsight Empresa - PATCH /corporations/{id}"];
+    H1a --> I1["Armazenar Mapeamento LG_ID -> Mindsight_ID"];
     H1b --> I1;
 
-    G2a -- Não Existe --> H2a[Criar Mindsight Filial: POST /branch_corporations/ (associar Corp. ID)];
-    G2a -- Existe --> H2b[Atualizar Mindsight Filial: PATCH /branch_corporations/{id}/];
-    H2a --> I2[Armazenar Mapeamento LG_ID -> Mindsight_ID];
+    G2a -- "Não Existe" --> H2a["Criar Mindsight Filial - POST /branch_corporations (associar Corp. ID)"];
+    G2a -- "Existe" --> H2b["Atualizar Mindsight Filial - PATCH /branch_corporations/{id}"];
+    H2a --> I2["Armazenar Mapeamento LG_ID -> Mindsight_ID"];
     H2b --> I2;
 
-    G3a -- Não Existe --> H3a[Criar Mindsight Área: POST /areas/create_complete/ (associar Parent Area ID)];
-    G3a -- Existe --> H3b[Atualizar Mindsight Área: PATCH /areas/{id}/edit_area_and_record/];
-    H3a --> I3[Armazenar Mapeamento LG_ID -> Mindsight_ID];
+    G3a -- "Não Existe" --> H3a["Criar Mindsight Área - POST /areas/create_complete (associar Parent Area ID)"];
+    G3a -- "Existe" --> H3b["Atualizar Mindsight Área - PATCH /areas/{id}/edit_area_and_record"];
+    H3a --> I3["Armazenar Mapeamento LG_ID -> Mindsight_ID"];
     H3b --> I3;
 
-    G4a -- Não Existe --> H4a[Criar Mindsight Cargo: POST /positions/create_complete/];
-    G4a -- Existe --> H4b[Atualizar Mindsight Cargo: PATCH /positions/{id}/edit_position_and_record/];
-    H4a --> I4[Armazenar Mapeamento LG_ID -> Mindsight_ID];
+    G4a -- "Não Existe" --> H4a["Criar Mindsight Cargo - POST /positions/create_complete"];
+    G4a -- "Existe" --> H4b["Atualizar Mindsight Cargo - PATCH /positions/{id}/edit_position_and_record"];
+    H4a --> I4["Armazenar Mapeamento LG_ID -> Mindsight_ID"];
     H4b --> I4;
     
-    I1 & I2 & I3 & I4 --> Z[Fim: Sincronização de Dados Mestres];
+    I1 & I2 & I3 & I4 --> Z["Fim - Sincronização de Dados Mestres"];
 
 ```
 
