@@ -1,6 +1,3 @@
-Com certeza! Vamos analisar a documentação da API Gen.te nuvem (LG) e da API Mindsight Controle para planejar a integração e construir o fluxograma.
-
----
 
 ## 1. Entendimento dos Sistemas
 
