@@ -1,8 +1,9 @@
 ```mermaid
 
+
 flowchart TD
     subgraph LG["LG Lugar de Gente (SOAP)"]
-        A1[ConsultarListaDeModificados(last_sync)]
+        A1[ConsultarListaDeModificados]
     end
 
     subgraph Digibee["Digibee iPaaS"]
@@ -21,7 +22,7 @@ flowchart TD
     end
 
     subgraph Mindsight["Mindsight (REST API)"]
-        C1[POST/PUT /employees]
+        C1[POST ou PUT /employees]
     end
 
     %% Ligações
@@ -30,6 +31,5 @@ flowchart TD
     B6 -- Desligado --> B8 --> C1 --> B9
     B9 -- Sucesso --> B10 --> B12
     B9 -- Erro --> B11 --> B12
-
 
 ```
