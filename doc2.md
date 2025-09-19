@@ -118,6 +118,7 @@ Este fluxo deve ser executado antes da sincronização de funcionários ou sempr
 
 ```mermaid
 graph TD
+
     A[Início: Sincronização de Dados Mestres] --> B{Conectar LG API (SOAP)};
     B --> C1[Consultar LG ServicoDeContratoDeTrabalho: Empresas];
     B --> C2[Consultar LG ServicoDeContratoDeTrabalho: Estabelecimentos];
