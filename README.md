@@ -1,9 +1,3 @@
-Com base na documentação fornecida, aqui está um procedimento detalhado para sincronizar os dados do sistema LG (Lugar de Gente) com a Mindsight, onde a Mindsight é o sistema que **recebe** os dados.
-
-Este procedimento é otimizado para ser eficiente, buscando apenas os registros modificados desde a última sincronização.
-
----
-
 ### **Procedimento de Sincronização LG -> Mindsight**
 
 #### **1. Configurações Iniciais**
