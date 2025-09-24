@@ -39,7 +39,7 @@ flowchart TD
 
 
 graph TD
-    subgraph Fase 2: Sincronização Contínua (Recorrente)
+    subgraph Sincronização Contínua
         direction TB
 
         A2[▶ Início da Sincronização Incremental] --> B2[1. Recuperar 'Data/Hora da Última Sincronização' do estado];
