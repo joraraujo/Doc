@@ -41,23 +41,23 @@ graph TD
         direction TB
 
         A2[Inicio da Sincronizacao Incremental] --> B2[1. Recuperar Data/Hora da Ultima Sincronizacao do estado];
-        B2 --> C2[2. Chamar ConsultarListaDeModificados no ServicoDeContratoDeTrabalho da LG (PeriodoDeBusca UltimaSincronizacao -> Agora)];
+        B2 --> C2[2. Chamar ConsultarListaDeModificados no ServicoDeContratoDeTrabalho da LG\nPeriodo de Busca: UltimaSincronizacao -> Agora];
         C2 --> D2{Existem registros modificados?};
         D2 -- Nao --> E2[Fim da Sincronizacao (Sem alteracoes)];
-        D2 -- Sim --> F2[3. Obter lista de Matriculas e tipo de operacao (Inclusao, Alteracao, Exclusao)];
+        D2 -- Sim --> F2[3. Obter lista de Matriculas e tipo de operacao - Inclusao, Alteracao, Exclusao];
         
         F2 --> G2{Loop para cada Matricula Modificada};
-        G2 --> H2[4. Consultar dados completos do contrato (ServicoDeContratoDeTrabalho)];
-        H2 --> I2[5. Consultar dados pessoais completos (ServicoDeColaborador)];
+        G2 --> H2[4. Consultar dados completos do contrato - ServicoDeContratoDeTrabalho];
+        H2 --> I2[5. Consultar dados pessoais completos - ServicoDeColaborador];
         I2 --> J2[6. Combinar e Traduzir dados];
         J2 --> K2{Qual o tipo de operacao?};
 
-        K2 -- Inclusao/Alteracao --> L2[7a. Verificar existencia na Mindsight via GET /employees/?employee_code={matricula}];
-        L2 -- Existe --> M2[8a. Atualizar Funcionario: Preparar payload e chamar PUT /employees/{id}/];
-        L2 -- Nao Existe --> M3[8b. Criar Funcionario: Preparar payload e chamar POST /employees/create_complete/];
+        K2 -- Inclusao/Alteracao --> L2[7a. Verificar existencia na Mindsight - GET /employees/?employee_code={matricula}];
+        L2 -- Existe --> M2[8a. Atualizar Funcionario - Preparar payload e chamar PUT /employees/{id}/];
+        L2 -- Nao Existe --> M3[8b. Criar Funcionario - Preparar payload e chamar POST /employees/create_complete/];
         
-        K2 -- Exclusao (Rescisao) --> L3[7b. Desativar Funcionario: Buscar URL em _actions.deactivate];
-        L3 -- URL Valida --> M4[8c. Chamar POST para a URL de desativacao com data e motivo da rescisao];
+        K2 -- Exclusao (Rescisao) --> L3[7b. Desativar Funcionario - Buscar URL em _actions.deactivate];
+        L3 -- URL Valida --> M4[8c. POST para a URL de desativacao com data e motivo da rescisao];
         
         subgraph Pos-Operacao Mindsight
             M2 --> N2{Sucesso?};
