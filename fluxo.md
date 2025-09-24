@@ -71,9 +71,9 @@ graph TD
             O3 --> P2;
         end
 
-```
         P2 -- Não --> G2;
         P2 -- Sim --> Q2[10. Atualizar 'Data/Hora da Última Sincronização' com o horário atual];
         Q2 --> R2[✔ Fim da Sincronização Incremental];
     end
 
+```
