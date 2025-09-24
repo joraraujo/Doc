@@ -38,10 +38,9 @@ Automatizar o processo de coleta de arquivos enviados pela DHL por meio de SFTP,
 
 ### **4.1. Gatilho (Trigger)**
 - **Tipo:** `Recurrence` (Recorrência)
-- **Frequência:** Diária
-- **Intervalo:** 1 Hora
-- **Horário de início:** `13:00 UTC` (horário configurado para 2025-09-24T13:00:00Z)
-- **Descrição:** O fluxo é executado automaticamente a cada 01h
+- **Frequência:** a cada 30 Minutos
+- **Intervalo:** 30 Minutos
+- **Descrição:** O fluxo é executado automaticamente a cada 30 Minutos
 
 ---
 
@@ -88,7 +87,7 @@ O fluxo é dividido em **três escopos paralelos**, cada um responsável por uma
 
 ```mermaid
 graph TD
-    A[Início: Gatilho a cada 01h] --> B[Escopo: Conemb]
+    A[Início: Gatilho a cada 30 Minutos] --> B[Escopo: Conemb]
     A --> C[Escopo: Doccob]
     A --> D[Escopo: Ocoren]
 
