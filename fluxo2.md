@@ -36,4 +36,5 @@ sequenceDiagram
     Digibee->>APIMindsight: POST /employees/create_complete/
     APIMindsight-->>Digibee: Sucesso (201 Created)
 
+
     ```
