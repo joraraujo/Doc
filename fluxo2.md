@@ -1,40 +1,35 @@
 
 ```mermaid
 
-sequenceDiagram
-    participant Scheduler as Gatilho Digibee
-    participant Digibee as Plataforma Digibee
-    participant APILG as API LG - SOAP
-    participant APIMindsight as API Mindsight - REST
-
-    Scheduler->>Digibee: Inicia fluxo de sincronizacao
-
-    note over Digibee,APILG: Etapa 1 - Obter codigos das empresas
-    Digibee->>APILG: ServicoDeEmpresa.ConsultarLista
-    APILG->>Digibee: Lista de empresas
-
-    loop Para cada empresa
-        note over Digibee,APILG: Etapa 2 - Identificar admissoes recentes
-        Digibee->>APILG: ServicoDeContratoDeTrabalho.ConsultarListaDeModificados
-        note over Digibee: Filtros: CodigoDaEmpresa; PeriodoDeBusca; TipoInclusao=1
-        APILG->>Digibee: Matriculas de novos contratos
+graph TD
+    subgraph Orquestração na Digibee
+        A[Start: Iniciar Fluxo de Admissão por Agendamento] --> B{1. Buscar Admitidos Recentes};
+        B --> C{2. Obter PessoaId de cada contrato};
+        C --> D{3. Buscar Dados Pessoais em Lote};
+        D --> E{4. Unir Dados e Transformar};
+        E --> F[5. Enviar para Mindsight];
     end
 
-    note over Digibee,APILG: Etapa 3 - Buscar detalhes em lotes de 50
-    Digibee->>APILG: ServicoDeContratoDeTrabalho.ConsultarListaPorDemanda
-    APILG->>Digibee: Dados contratuais + PessoaId
+    subgraph "Sistema de Origem: LG (SOAP API)"
+        B --"Chamar API Contrato de Trabalho"--> B1["ServicoDeContratoDeTrabalho.<br/><b>ConsultarListaDeModificados</b><br/><i>Filtro: TipoDeOperacoes = 1 (Inclusão)</i>"];
+        B1 --"Retorna: Lista de Matrículas dos admitidos"--> B;
 
-    Digibee->>APILG: ServicoDeColaborador.ConsultarLista
-    APILG->>Digibee: Dados pessoais (Nome, CPF)
+        C --"Para cada Matrícula"--> C1["ServicoDeContratoDeTrabalho.<br/><b>Consultar</b><br/><i>(ou ConsultarListaPorDemanda)</i>"];
+        C1 --"Retorna: Detalhes do contrato, incluindo <b>PessoaId</b>"--> C;
 
-    Digibee->>APILG: ServicoDeContratoDeTrabalho.ConsultarListaDeGestorImediato
-    APILG->>Digibee: Dados do gestor
+        D --"Agrupar <b>PessoaId</b> em lotes de 50"--> D1["ServicoDeColaborador.<br/><b>ConsultarLista</b>"];
+        D1 --"Retorna: Dados pessoais detalhados"--> D;
+    end
 
-    note over Digibee: Etapa 4 - Transformacao e mapeamento
-    Digibee->>Digibee: Consolida dados e transforma em JSON
+    subgraph "Sistema de Destino: Mindsight (REST API)"
+        F --"Chamar API Mindsight"--> F1["POST /employees/create_complete/"];
+        F1 --"Cria o novo colaborador com dados unificados"--> G[End];
+    end
 
-    note over Digibee,APIMindsight: Etapa 5 - Cadastro na Mindsight
-    Digibee->>APIMindsight: POST /employees/create_complete/
-    APIMindsight->>Digibee: Sucesso 201 Created
+    style A fill:#c9f,stroke:#333,stroke-width:2px
+    style F1 fill:#d4ffb3,stroke:#333,stroke-width:2px
+    style B1 fill:#b3e6ff,stroke:#333,stroke-width:2px
+    style C1 fill:#b3e6ff,stroke:#333,stroke-width:2px
+    style D1 fill:#b3e6ff,stroke:#333,stroke-width:2px
 
     ```
