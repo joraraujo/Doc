@@ -16,7 +16,7 @@ graph TD
     E(ConectaBDSIS: Conecta BD SIS e BD STAGE);
 
     subgraph Pesquisa de Registros Pendentes
-        E --> F["Query em [tb_sis_relato] (BD SIS): Buscar registros onde numeroSequencialFUP is null"];
+        E --> F["Query em [tb_sis_relato] - BD SIS: Buscar registros onde numeroSequencialFUP is null"];
         F --> G{Há registros para sincronizar?};
         G -- Sim --> H{Para cada Registro codOrigem e codigo};
         G -- Não --> S;
@@ -38,16 +38,8 @@ graph TD
     subgraph Chamada da API e Atualização - Plusoft_API_SISUpdate
         N --> O(ExecuteAPIPlusoftSIS: Envia requisição POST p/ PLUSOFT_API_EndPoint);
         O --> P{Resultado da API: OK ou Err};
-        P --> Q[Atualiza/Insere: PLUSOFT_SIS_Control (STAGE) com Status e Data APIDateSinc];
-        Q --> R[Grava Status/Msg no Log Diário (API_Plusoft_SIS-YYYYMMDD.log)];
-        R --> M;
-    end
-
-    M --> H;
-
-    S(ConectaBDSIS(false): Desconecta BD SIS e BD STAGE);
-    S --> FIM(Fim da Rotina);
-
+        P --> Q[Atualiza/Insere: PLUSOFT_SIS_Control - STAGE com Status e Data APIDateSinc];
+        Q --> R[Grava Status/Msg no Log Diário - API_Plusoft_SIS-YYYYMMDD.]()
 
 
 ```
