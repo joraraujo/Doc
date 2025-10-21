@@ -18,7 +18,7 @@ graph TD
     subgraph Pesquisa de Registros Pendentes
         E --> F["Query em [tb_sis_relato] (BD SIS): Buscar registros onde numeroSequencialFUP is null"];
         F --> G{Há registros para sincronizar?};
-        G -- Sim --> H{Para cada Registro (codOrigem, codigo)};
+        G -- Sim --> H{Para cada Registro \(codOrigem, codigo\)};
         G -- Não --> S;
     end
 
