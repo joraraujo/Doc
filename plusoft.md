@@ -39,7 +39,15 @@ graph TD
         N --> O(ExecuteAPIPlusoftSIS: Envia requisição POST p/ PLUSOFT_API_EndPoint);
         O --> P{Resultado da API: OK ou Err};
         P --> Q[Atualiza/Insere: PLUSOFT_SIS_Control - STAGE com Status e Data APIDateSinc];
-        Q --> R[Grava Status/Msg no Log Diário - API_Plusoft_SIS-YYYYMMDD.]()
+        Q --> R[Grava Status/Msg no Log Diário - API_Plusoft_SIS-YYYYMMDD-log];
+        R --> M;
+    end
+
+    M --> H;
+
+    S(ConectaBDSIS false: Desconecta BD SIS e BD STAGE);
+    S --> FIM(Fim da Rotina);
+
 
 
 ```
