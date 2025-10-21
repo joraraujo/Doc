@@ -30,7 +30,7 @@ graph TD
         J -- Sim --> K;
 
         K[Consulta: Verifica Status anterior do codOrigem na PLUSOFT_SIS_Control];
-        K --> L{Registro existe E Status = "OK"?};
+        K --> L{Registro existe E Status = OK?};
         L -- Sim --> M(Finaliza este Registro);
         L -- Não --> N(Chama Plusoft_API_SISUpdate);
     end
@@ -47,6 +47,7 @@ graph TD
 
     S(ConectaBDSIS(false): Desconecta BD SIS e BD STAGE);
     S --> FIM(Fim da Rotina);
+
 
 
 ```
