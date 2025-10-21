@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     A[Início: Sinc_SISNumber] --> B;
 
@@ -45,3 +46,5 @@ graph TD
 
     S(ConectaBDSIS(false): Desconecta BD SIS e BD STAGE);
     S --> FIM(Fim da Rotina);
+
+```
