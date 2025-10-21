@@ -1,4 +1,5 @@
 ```mermaid
+
 graph TD
     A[Início: Sinc_SISNumber] --> B;
 
@@ -15,7 +16,7 @@ graph TD
     E(ConectaBDSIS: Conecta BD SIS e BD STAGE);
 
     subgraph Pesquisa de Registros Pendentes
-        E --> F[Query em [tb_sis_relato] (BD SIS): Buscar registros onde numeroSequencialFUP is null];
+        E --> F["Query em [tb_sis_relato] (BD SIS): Buscar registros onde numeroSequencialFUP is null"];
         F --> G{Há registros para sincronizar?};
         G -- Sim --> H{Para cada Registro (codOrigem, codigo)};
         G -- Não --> S;
@@ -46,5 +47,6 @@ graph TD
 
     S(ConectaBDSIS(false): Desconecta BD SIS e BD STAGE);
     S --> FIM(Fim da Rotina);
+
 
 ```
